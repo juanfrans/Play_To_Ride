@@ -17,15 +17,12 @@ float minX = 2.04793473;
 float minY = 41.451080514;
 float maxX = 2.25098207;
 float maxY = 41.336866383;
-float totalAnimationTime = 50000;
+float totalAnimationTime = 10080;
 //float totalAnimationTime = 1.5*60*30*3;
-float baseStartTime = 5000000000L;
-float baseEndTime = 0;
-float unixAnimationTime = 0;
-float tint = 1;
+float tint = 35;
 float totalKm = 0;
 float districtKm1, districtKm2, districtKm3, districtKm4, districtKm5, districtKm6, districtKm7, districtKm8, districtKm9, districtKm10;
-
+int rectangleDivisor = 6;
 
 //****************Color Variables***********
 //color agentsColor = #00FF81;
@@ -72,14 +69,14 @@ void loadData() {
 
   //*************************************************************Loop through files
   numberOfRides = filenames.length;
-  numberOfRides = 500;
+  //numberOfRides = 500;
   ride = new RideAgents[numberOfRides];
   int rideIndex = 0;
   String fileIndex;
   String[] fileNameComponents;
   float startTime, endTime, distance, district;
   String bikeShare;
-  startTime = 5000000000L;
+  startTime = 0;
   endTime = 0;
   for (int i = 0; i<numberOfRides; i++) {
     fileNameComponents = split(filenames[i], "-");
@@ -89,8 +86,8 @@ void loadData() {
     bikeShare = null;
     for (TableRow row : baseTable.rows ()) {
       if (int(fileIndex) == int(row.getString("Id activitat"))) {
-        startTime = float(row.getString("UnixStartTime"));
-        endTime = float(row.getString("UnixEndTime"));
+        startTime = float(row.getString("Mod_Start"));
+        endTime = float(row.getString("Mod_End"));
         distance = float(row.getString("Distancia de la activitat (m)"));
         district = float(row.getString("Districte id"));
         bikeShare = row.getString("Utiltiza bicing / Id bicing");
@@ -123,12 +120,9 @@ void loadData() {
       coordinatePairs[0].x = 0;
       coordinatePairs[0].y = 0;
     }
-    baseStartTime = min(startTime, baseStartTime);
-    baseEndTime = max(endTime, baseEndTime);
-    println("Building "+i+"/"+numberOfRides);
+    println("Building "+i+"/"+numberOfRides+" "+startTime);
     ride[i] = new RideAgents(fileIndex, startTime, endTime, distance, district, bikeShare, rideIndex, coordinatePairs);
   }
-  unixAnimationTime = baseEndTime - baseStartTime;
   println("Done building the objects...");
 }
 
@@ -146,10 +140,10 @@ void draw() {
   districtKm9 = 0;
   districtKm10 = 0;
 
-  //background(0);
-  //tint(360, tint);
-  //image(background, 0, 0, width, height);
-  /*
+  background(0);
+  tint(360, tint);
+  image(background, 0, 0, width, height);
+
   for (int i=0; i<ride.length; i++) {
     ride[i].plotRide();
     ride[i].plotStartPoint();
@@ -196,6 +190,7 @@ void draw() {
   stroke(titleColor);
   strokeWeight(0.75);
   line(20, 58, 20+textWidth("Barcelona Cycle Challenge - 2014"), 58);
+  float lengthOfText = textWidth("Barcelona Cycle Challenge - 2014");
   textAlign(LEFT, BOTTOM);
   textFont(kmFont);
   text(nfc(totalKm, 1), 140, 110);
@@ -204,48 +199,59 @@ void draw() {
   text("District race:", 20, 135);
   noStroke();
   fill(titleColor);
-  rect(20, 140, districtKm1, 8);
-  rect(20, 150, districtKm2, 8);
-  rect(20, 160, districtKm3, 8);
-  rect(20, 170, districtKm4, 8);
-  rect(20, 180, districtKm5, 8);
-  rect(20, 190, districtKm6, 8);
-  rect(20, 200, districtKm7, 8);
-  rect(20, 210, districtKm8, 8);
-  rect(20, 220, districtKm9, 8);
-  rect(20, 230, districtKm10, 8);
+  rect(20, 140, districtKm1/rectangleDivisor, 8);
+  rect(20, 150, districtKm2/rectangleDivisor, 8);
+  rect(20, 160, districtKm3/rectangleDivisor, 8);
+  rect(20, 170, districtKm4/rectangleDivisor, 8);
+  rect(20, 180, districtKm5/rectangleDivisor, 8);
+  rect(20, 190, districtKm6/rectangleDivisor, 8);
+  rect(20, 200, districtKm7/rectangleDivisor, 8);
+  rect(20, 210, districtKm8/rectangleDivisor, 8);
+  rect(20, 220, districtKm9/rectangleDivisor, 8);
+  rect(20, 230, districtKm10/rectangleDivisor, 8);
   textAlign(LEFT, CENTER);
   textFont(textFont);
-  text("1", 25+districtKm1, 140);
-  text("2", 25+districtKm2, 150);
-  text("3", 25+districtKm3, 160);
-  text("4", 25+districtKm4, 170);
-  text("5", 25+districtKm5, 180);
-  text("6", 25+districtKm6, 191);
-  text("7", 25+districtKm7, 200);
-  text("8", 25+districtKm8, 212);
-  text("9", 25+districtKm9, 220);
-  text("10", 25+districtKm10, 230);
-  */
+  text("1", 25+districtKm1/rectangleDivisor, 140);
+  text("2", 25+districtKm2/rectangleDivisor, 150);
+  text("3", 25+districtKm3/rectangleDivisor, 160);
+  text("4", 25+districtKm4/rectangleDivisor, 170);
+  text("5", 25+districtKm5/rectangleDivisor, 180);
+  text("6", 25+districtKm6/rectangleDivisor, 191);
+  text("7", 25+districtKm7/rectangleDivisor, 200);
+  text("8", 25+districtKm8/rectangleDivisor, 212);
+  text("9", 25+districtKm9/rectangleDivisor, 220);
+  text("10", 25+districtKm10/rectangleDivisor, 230);
+
+  strokeWeight(0.75);
+  stroke(titleColor);
+  line(20, height-20, 20+lengthOfText, height-20);
+  strokeWeight(2);
+  line(20+frameCount*lengthOfText/totalAnimationTime, height-25, 20+frameCount*lengthOfText/totalAnimationTime, height-15);
+  noStroke();
+  textFont(subtitleFont);
+  text("Start", 20, height-40);
+  text("End", lengthOfText, height-40);
 
   textAlign(RIGHT, BOTTOM);
   textFont(subtitleFont);
   text("Animation produced by Juan Francisco Saldarriaga - juanfrans@gmail.com", width-20, height-20);
 
   //**************************Transparency Drawing********************
+  /*
   routes.beginDraw();
-  for (int i=0; i<ride.length; i++) {
-    ride[i].plotRoute();
-  }
-  routes.endDraw();
-  routes.save("transparency_overlay/routes_test_"+frameCount+".png");
+   for (int i=0; i<ride.length; i++) {
+   ride[i].plotRoute();
+   }
+   routes.endDraw();
+   routes.save("transparency_overlay/routes_test_"+frameCount+".png");
+   */
 
   if (frameCount > totalAnimationTime) {
     exit();
   } else {
     println("Frame count = "+frameCount);
   }
-  //saveFrame("base_frames/animation_####.png");
+  saveFrame("base_frames/animation_####.png");
   //println((frameCount*unixAnimationTime)/totalAnimationTime+" "+(baseEndTime-baseStartTime));
 }
 
