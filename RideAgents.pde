@@ -50,15 +50,15 @@ class RideAgents {
   }
   void plotStartPoint() {
     if (distanceMeters > 0) {
-      float lengthOfPoint = 50;
+      float lengthOfPoint = 8;
       float sizeOfPoint;
       float currentFramePoint = 0;
-      if (frameCount > start_time && frameCount < start_time+lengthOfPoint) {
+      if (frameCount+3 > start_time && frameCount+3 < start_time+lengthOfPoint) {
         currentFramePoint = frameCount-start_time;
-        sizeOfPoint = .2 * currentFramePoint;
+        sizeOfPoint = 1 * currentFramePoint;
         PVector startPoint = coordinates[0];
         fill(agentsColor);
-        ellipse(map(startPoint.x, minX, maxX, 0, width), map(startPoint.y, minY, maxY, 0, height), 5, 5);
+        ellipse(map(startPoint.x, minX, maxX, 0, width), map(startPoint.y, minY, maxY, 0, height), 3, 3);
         stroke(agentsColor, 20);
         strokeWeight(.25);
         fill(agentsColor, 20);
@@ -71,12 +71,12 @@ class RideAgents {
   }
   void plotEndPoint() {
     if (distanceMeters > 0) {
-      float lengthOfPoint = 50;
+      float lengthOfPoint = 20;
       float sizeOfPoint;
       float currentFramePoint = 0;
       if (frameCount > end_time && frameCount < end_time+lengthOfPoint) {
         currentFramePoint = frameCount-end_time;
-        sizeOfPoint = 0.2 * currentFramePoint;        
+        sizeOfPoint = 0.5 * currentFramePoint;        
         PVector startPoint = coordinates[coordinates.length-1];
         fill(agentsColor);
         ellipse(map(startPoint.x, minX, maxX, 0, width), map(startPoint.y, minY, maxY, 0, height), 5, 5);

@@ -17,12 +17,12 @@ float minX = 2.04793473;
 float minY = 41.451080514;
 float maxX = 2.25098207;
 float maxY = 41.336866383;
-float totalAnimationTime = 10080;
-//float totalAnimationTime = 1.5*60*30*3;
+//float totalAnimationTime = 2700;
+float totalAnimationTime = 2700*3;
 float tint = 35;
 float totalKm = 0;
 float districtKm1, districtKm2, districtKm3, districtKm4, districtKm5, districtKm6, districtKm7, districtKm8, districtKm9, districtKm10;
-int rectangleDivisor = 6;
+int rectangleDivisor = 10;
 
 //****************Color Variables***********
 //color agentsColor = #00FF81;
@@ -75,6 +75,7 @@ void loadData() {
   String fileIndex;
   String[] fileNameComponents;
   float startTime, endTime, distance, district;
+  String[] timeStampStart, timeStampEnd, hourStart, hourEnd;
   String bikeShare;
   startTime = 0;
   endTime = 0;
@@ -86,8 +87,12 @@ void loadData() {
     bikeShare = null;
     for (TableRow row : baseTable.rows ()) {
       if (int(fileIndex) == int(row.getString("Id activitat"))) {
-        startTime = float(row.getString("Mod_Start"));
-        endTime = float(row.getString("Mod_End"));
+        timeStampStart = split(row.getString("Timestamp start"), " ");
+        timeStampEnd = split(row.getString("Timestamp end"), " ");
+        hourStart = split(timeStampStart[1], ":");
+        hourEnd = split(timeStampEnd[1], ":");
+        startTime = map(float(hourStart[0])*60+float(hourStart[1]), 0, 24*60, 0, totalAnimationTime);
+        endTime = map(float(hourEnd[0])*60+float(hourEnd[1]), 0, 24*60, 0, totalAnimationTime);
         distance = float(row.getString("Distancia de la activitat (m)"));
         district = float(row.getString("Districte id"));
         bikeShare = row.getString("Utiltiza bicing / Id bicing");
@@ -139,7 +144,7 @@ void draw() {
   districtKm8 = 0;
   districtKm9 = 0;
   districtKm10 = 0;
-
+/*
   background(0);
   tint(360, tint);
   image(background, 0, 0, width, height);
@@ -147,7 +152,7 @@ void draw() {
   for (int i=0; i<ride.length; i++) {
     ride[i].plotRide();
     ride[i].plotStartPoint();
-    ride[i].plotEndPoint();
+    //ride[i].plotEndPoint();
     totalKm = totalKm + ride[i].currentDistance;
     if (ride[i].district_id == 1) {
       districtKm1 = districtKm1 + ride[i].currentDistance;
@@ -237,21 +242,22 @@ void draw() {
   text("Animation produced by Juan Francisco Saldarriaga - juanfrans@gmail.com", width-20, height-20);
 
   //**************************Transparency Drawing********************
-  /*
-  routes.beginDraw();
+*/
+  
+routes.beginDraw();
    for (int i=0; i<ride.length; i++) {
    ride[i].plotRoute();
    }
    routes.endDraw();
    routes.save("transparency_overlay/routes_test_"+frameCount+".png");
-   */
+   
 
   if (frameCount > totalAnimationTime) {
     exit();
   } else {
     println("Frame count = "+frameCount);
   }
-  saveFrame("base_frames/animation_####.png");
+  //saveFrame("base_frames/animation_####.png");
   //println((frameCount*unixAnimationTime)/totalAnimationTime+" "+(baseEndTime-baseStartTime));
 }
 
